@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 )
@@ -74,7 +73,7 @@ type ListUsersParams struct {
 func (store *SQLStore) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
 	emptyArg := ListUsersParams{}
 	if arg != emptyArg {
-		return nil, errors.New("что-то пошло не так")
+		return nil, fmt.Errorf("что-то пошло не так")
 	}
 	tx, err := store.connPool.Begin(ctx)
 	if err != nil {

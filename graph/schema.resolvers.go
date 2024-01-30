@@ -17,7 +17,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 	arg.HashedPassword = input.Password
 	arg.FullName = input.FullName
 	arg.Email = input.Email
-	u, err := r.Store.AddUser(ctx, arg)
+	u, err := r.DB.AddUser(ctx, arg)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	var arg db.ListUsersParams
-	users, err := r.Store.ListUsers(ctx, arg)
+	users, err := r.DB.ListUsers(ctx, arg)
 	if err != nil {
 		return nil, err
 	}
