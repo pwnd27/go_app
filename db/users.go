@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 )
@@ -70,8 +71,16 @@ SELECT username, hashed_password, full_name, email, password_changed_at, created
 type ListUsersParams struct {
 }
 
-func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
-	rows, err := q.db.Query(ctx, listUsers)
+func (store *SQLStore) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
+	emptyArg := ListUsersParams{}
+	if arg != emptyArg {
+		return nil, errors.New("что-то пошло не так")
+	}
+	tx, err := store.connPool.Begin(ctx)
+	if err != nil {
+		return nil, err
+	}
+	rows, err := tx.Query(ctx, listUsers)
 	if err != nil {
 		return nil, err
 	}
@@ -87,12 +96,15 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.PasswordChangedAt,
 			&i.CreatedAt,
 		); err != nil {
-			return nil, err
+			if rbErr := tx.Rollback(ctx); rbErr != nil {
+				return nil, fmt.Errorf("tx err: %v, rb err: %v", err, rbErr)
+			}
 		}
 		items = append(items, i)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
-	return items, nil
+	err = tx.Commit(ctx)
+	return items, err
 }

@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"github.com/pwnd27/go_app/db"
 	"github.com/pwnd27/go_app/graph/model"
 )
@@ -22,20 +21,23 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 	if err != nil {
 		return nil, err
 	}
-	var i model.User
-	i.Username = u.Username
-	i.FullName = u.FullName
-	i.Email = u.Email
-	t := u.CreatedAt.String()
-	i.CreatedAt = &t
-	t = u.PasswordChangedAt.String()
-	i.PasswordChangedAt = &t
+	i := model.UserResponse(u)
 	return &i, nil
 }
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented: Users - users"))
+	var arg db.ListUsersParams
+	users, err := r.Store.ListUsers(ctx, arg)
+	if err != nil {
+		return nil, err
+	}
+	var items []*model.User
+	for _, u := range users {
+		i := model.UserResponse(u)
+		items = append(items, &i)
+	}
+	return items, nil
 }
 
 // Mutation returns MutationResolver implementation.
