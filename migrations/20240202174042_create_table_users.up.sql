@@ -1,6 +1,7 @@
 create table "users"
 (
-    "username"            varchar primary key,
+    "id"                  UUID primary key default (uuid_generate_v4()),
+    "username"            varchar not null,
     "hashed_password"     varchar        not null,
     "full_name"           varchar        not null,
     "email"               varchar unique not null,
