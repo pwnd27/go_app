@@ -6,35 +6,44 @@ package graph
 
 import (
 	"context"
+	"github.com/pwnd27/go_app/app"
 	"github.com/pwnd27/go_app/db"
 	"github.com/pwnd27/go_app/graph/model"
 )
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
+	gc, err := app.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	var arg db.AddUserParams
 	arg.Username = input.Username
 	arg.HashedPassword = input.Password
 	arg.FullName = input.FullName
 	arg.Email = input.Email
-	u, err := r.DB.AddUser(ctx, arg)
+	u, err := r.DB.AddUser(gc, arg)
 	if err != nil {
 		return nil, err
 	}
-	i := model.UserResponse(u)
+	i := app.UserResponse(u)
 	return &i, nil
 }
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+	gc, err := app.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	var arg db.ListUsersParams
-	users, err := r.DB.ListUsers(ctx, arg)
+	users, err := r.DB.ListUsers(gc, arg)
 	if err != nil {
 		return nil, err
 	}
 	var items []*model.User
 	for _, u := range users {
-		i := model.UserResponse(u)
+		i := app.UserResponse(u)
 		items = append(items, &i)
 	}
 	return items, nil

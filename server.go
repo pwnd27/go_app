@@ -3,15 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/pwnd27/go_app/app"
-	"github.com/pwnd27/go_app/db"
-	"os"
-
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/pwnd27/go_app/app"
+	"github.com/pwnd27/go_app/db"
 	"github.com/pwnd27/go_app/graph"
+	"os"
 )
 
 func main() {
@@ -19,7 +18,7 @@ func main() {
 	r := gin.Default()
 	r.Use(app.GinContextToContextMiddleware())
 
-	dbPool, err := pgxpool.New(context.Background(), "postgresql://user:pass@localhost:5432/postgres?sslmode=disable")
+	dbPool, err := pgxpool.New(context.Background(), "postgres://user:pass@localhost:5432/postgres?sslmode=disable")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
 		os.Exit(1)
