@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
+	"github.com/google/uuid"
 	"time"
 )
 
@@ -14,7 +15,7 @@ INSERT INTO users (
   email
 ) VALUES (
   $1, $2, $3, $4
-) RETURNING username, hashed_password, full_name, email, password_changed_at, created_at
+) RETURNING id, username, hashed_password, full_name, email, password_changed_at, created_at
 `
 
 type AddUserParams struct {
@@ -25,6 +26,7 @@ type AddUserParams struct {
 }
 
 type User struct {
+	ID                uuid.UUID
 	Username          string
 	HashedPassword    string
 	FullName          string
@@ -46,6 +48,7 @@ func (store *SQLStore) AddUser(ctx context.Context, arg AddUserParams) (User, er
 	)
 	var i User
 	err = row.Scan(
+		&i.ID,
 		&i.Username,
 		&i.HashedPassword,
 		&i.FullName,
@@ -64,7 +67,7 @@ func (store *SQLStore) AddUser(ctx context.Context, arg AddUserParams) (User, er
 }
 
 const listUsers = `
-SELECT username, hashed_password, full_name, email, password_changed_at, created_at FROM users
+SELECT id, username, hashed_password, full_name, email, password_changed_at, created_at FROM users
 `
 
 type ListUsersParams struct {
@@ -88,6 +91,7 @@ func (store *SQLStore) ListUsers(ctx context.Context, arg ListUsersParams) ([]Us
 	for rows.Next() {
 		var i User
 		if err = rows.Scan(
+			&i.ID,
 			&i.Username,
 			&i.HashedPassword,
 			&i.FullName,

@@ -2,6 +2,12 @@
 
 package model
 
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
 type Mutation struct {
 }
 
@@ -9,12 +15,13 @@ type Query struct {
 }
 
 type User struct {
-	Username          string  `json:"username"`
-	FullName          string  `json:"full_name"`
-	Email             string  `json:"email"`
-	PasswordChangedAt *string `json:"password_changed_at,omitempty"`
-	CreatedAt         *string `json:"created_at,omitempty"`
-	Image             *string `json:"image,omitempty"`
+	ID                uuid.UUID  `json:"id"`
+	Username          string     `json:"username"`
+	FullName          string     `json:"full_name"`
+	Email             string     `json:"email"`
+	PasswordChangedAt *time.Time `json:"password_changed_at,omitempty"`
+	CreatedAt         *time.Time `json:"created_at,omitempty"`
+	Image             *string    `json:"image,omitempty"`
 }
 
 type UserInput struct {

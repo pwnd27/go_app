@@ -18,7 +18,7 @@ func main() {
 	r := gin.Default()
 	r.Use(app.GinContextToContextMiddleware())
 
-	dbPool, err := pgxpool.New(context.Background(), "postgres://user:pass@localhost:5432/postgres?sslmode=disable")
+	dbPool, err := pgxpool.New(context.Background(), "postgres://user:pass@localhost:5432/mydb?sslmode=disable")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
 		os.Exit(1)

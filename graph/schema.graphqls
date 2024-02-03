@@ -1,9 +1,14 @@
+scalar UUID
+
+scalar Time
+
 type User {
+    id: UUID!
     username: String!
     full_name: String!
     email: String!
-    password_changed_at: String
-    created_at: String
+    password_changed_at: Time
+    created_at: Time
     image: String
 }
 

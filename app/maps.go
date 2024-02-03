@@ -6,14 +6,13 @@ import (
 )
 
 func UserResponse(u db.User) model.User {
-	passwordChangedAt := u.PasswordChangedAt.String()
-	createdAt := u.CreatedAt.String()
 	return model.User{
+		ID:                u.ID,
 		Username:          u.Username,
 		FullName:          u.FullName,
 		Email:             u.Email,
-		PasswordChangedAt: &passwordChangedAt,
-		CreatedAt:         &createdAt,
+		PasswordChangedAt: &u.PasswordChangedAt,
+		CreatedAt:         &u.CreatedAt,
 		Image:             nil,
 	}
 }
